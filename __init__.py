@@ -90,7 +90,7 @@ class __OT_FarsiTextMode(Operator):
         elif event.type == 'V' and event.ctrl:
             if event.value == 'PRESS':
                 pasted_text = bpy.context.window_manager.clipboard
-                fa.insert_char(pasted_text)
+                fa.insert_text(pasted_text)
             return {'RUNNING_MODAL'}
         
         return {'PASS_THROUGH'}

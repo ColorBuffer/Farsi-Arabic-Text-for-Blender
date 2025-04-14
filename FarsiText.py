@@ -448,8 +448,13 @@ class Text:
         self.update_text()
         
 
-    # Move the cursor (well, our pointer) to the previous char/position
+    # Add a new character
+    def insert_text(self, text):
+        self.text_buffer[self.current_char_index : self.current_char_index] = list(text)
+        self.current_char_index += len(text)
+        self.update_text()
 
+    # Move the cursor (well, our pointer) to the previous char/position
     def move_previous(self):
         if self.current_char_index > 0:
             self.current_char_index -= 1
