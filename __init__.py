@@ -76,7 +76,7 @@ class __OT_FarsiTextMode(Operator):
 
         elif event.type == 'RET':
             if event.value == 'PRESS':
-                fa.insert_text('\n')
+                fa.insert_char('\n')
             return {'RUNNING_MODAL'}
                    
         elif event.type == 'TAB':
@@ -84,13 +84,13 @@ class __OT_FarsiTextMode(Operator):
             
         elif event.unicode:
             if event.value == 'PRESS':
-                fa.insert_text(event.unicode)
+                fa.insert_char(event.unicode)
             return {'RUNNING_MODAL'}
         
         elif event.type == 'V' and event.ctrl:
             if event.value == 'PRESS':
                 pasted_text = bpy.context.window_manager.clipboard
-                fa.insert_text(pasted_text)
+                fa.insert_char(pasted_text)
             return {'RUNNING_MODAL'}
         
         return {'PASS_THROUGH'}

@@ -442,7 +442,7 @@ class Text:
         self.update_visual_cursor_position()
 
     # Add a new character
-    def insert_text(self, char):
+    def insert_char(self, char):
         self.text_buffer.insert(self.current_char_index, char)
         self.current_char_index += 1
         self.update_text()
