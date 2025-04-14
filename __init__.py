@@ -114,9 +114,6 @@ from bpy.app.handlers import persistent
 
 @persistent
 def load_handler(dummy):
-    # only apply to startup
-    if not bpy.data.filepath:
-        return
     for area in bpy.context.screen.areas:
         if area.type == "VIEW_3D":
             with bpy.context.temp_override(area = area):
@@ -126,10 +123,14 @@ def load_handler(dummy):
 def register():
     bpy.utils.register_class(__OT_FarsiTextMode)
 
-    bpy.app.handlers.load_post.append(load_handler)
+    if load_handler not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(load_handler)
     
 def unregister():
     bpy.utils.unregister_class(__OT_FarsiTextMode)
+    
+    if load_handler in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(load_handler)
 
 if __name__ == "__main__":
     register()
