@@ -560,22 +560,9 @@ class Text:
 
     current_char_index = 0
 
-    def __init__(self):
-
-        if bpy.context.object is None or bpy.context.object.type != 'FONT' or bpy.context.object.mode != 'EDIT':
-
-            return
+    def __init__(self, src: str):
         
-        self.text_buffer = swap_lines(bpy.context.object.data.body)
-        self.text_buffer = unlink_text(self.text_buffer)
-        
-        addon_dir = os.path.dirname(os.path.realpath(__file__))
-        new_font = os.path.join(addon_dir, "B Nazanin.TTF")
-        
-        if os.path.exists(new_font):
-            bpy.context.object.data.font = bpy.data.fonts.load(new_font, check_existing=True)    
-
-        bpy.context.object.data.align_x = 'RIGHT'
+        self.text_buffer = unlink_text(swap_lines(src))
         
         self.current_char_index = 0
         

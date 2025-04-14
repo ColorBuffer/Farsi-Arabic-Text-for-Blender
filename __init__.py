@@ -29,12 +29,12 @@ class __OT_FarsiTextMode(Operator):
         
         # Use this handler only when a 3DText object is selected and being edited
         
-        if bpy.context.object is None or bpy.context.object.type != 'FONT' or bpy.context.object.mode != 'EDIT':
+        if context.object is None or context.object.type != 'FONT' or context.object.mode != 'EDIT':
         
             return {'PASS_THROUGH'}
         
         if id(context.object) not in self.my_map:
-            self.my_map[id(context.object)] = Fa.Text()
+            self.my_map[id(context.object)] = Fa.Text(context.object.data.body)
         fa = self.my_map[id(context.object)]
         
         if event.type == 'BACK_SPACE':
@@ -111,7 +111,7 @@ class __OT_FarsiTextMode(Operator):
                    
         elif event.type == 'TAB':
             
-        #     if event.value == 'RELEASE' and bpy.context.object.mode == 'EDIT':
+        #     if event.value == 'RELEASE' and context.object.mode == 'EDIT':
                 
         #             fa.init()
             
@@ -129,7 +129,7 @@ class __OT_FarsiTextMode(Operator):
      
     #
         
-    def invoke(self, context, event):
+    def invoke(self, context: Context, event: Event):
         
         if context.area.type == 'VIEW_3D':
             
@@ -137,7 +137,7 @@ class __OT_FarsiTextMode(Operator):
             
             context.window_manager.modal_handler_add(self)
             
-            if bpy.context.object is not None and bpy.context.object.type == 'FONT' and bpy.context.object.mode == 'EDIT':
+            if context.object is not None and context.object.type == 'FONT' and context.object.mode == 'EDIT':
                 
                 # update text data (i don't know a better way to do this)
                 
