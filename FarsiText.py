@@ -295,8 +295,11 @@ def link_text(unlinked_text):
         if is_left_connectable(previous_char) and is_right_connectable(current_char):
 
             if is_left_connectable(current_char) and is_right_connectable(next_char):
-
-                char_code += 3
+                
+                if char_code == 65263: # ی
+                    char_code += 5
+                else:
+                    char_code += 3
 
             else:
 
@@ -304,9 +307,11 @@ def link_text(unlinked_text):
         else:
 
             if is_left_connectable(current_char) and is_right_connectable(next_char):
-
-                char_code += 2
-            
+                
+                if char_code == 65263:
+                    char_code += 4
+                else:
+                    char_code += 2
             else:
                 char_code = ord(current_char)
 
@@ -332,7 +337,7 @@ def swap_lines(linked_text):
 
     for c in reversed(linked_text):
 
-        if(c == '\n'):
+        if c == '\n':
 
             new_text.append('\n')
 
