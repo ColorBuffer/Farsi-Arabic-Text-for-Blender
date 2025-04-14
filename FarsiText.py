@@ -2,11 +2,6 @@ import bpy
 import os
 
 
-text_buffer = []
-
-current_char_index = 0
-
-
 # Farsi letters list
 
 farsi_chars = ['ا', 'أ', 'إ', 'آ', 'ء', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ',
@@ -560,318 +555,283 @@ def unlink_text(linked_text):
 
 # Prepare our text (3D text, text_buffer)
 
-def init():
+class Text:
+    text_buffer = []
 
-    global current_char_index
-    global text_buffer
-
-    if bpy.context.object is None or bpy.context.object.type != 'FONT' or bpy.context.object.mode != 'EDIT':
-
-        return
-    
-    text_buffer = swap_lines(bpy.context.object.data.body)
-    text_buffer = unlink_text(text_buffer)
-    
-    addon_dir = os.path.dirname(os.path.realpath(__file__))
-    new_font = os.path.join(addon_dir, "B Nazanin.TTF")
-    
-    if os.path.exists(new_font):
-        bpy.context.object.data.font = bpy.data.fonts.load(new_font, check_existing=True)    
-
-    bpy.context.object.data.align_x = 'RIGHT'
-    
     current_char_index = 0
-    
-    update_visual_cursor_position()
 
+    def __init__(self):
 
-#
+        if bpy.context.object is None or bpy.context.object.type != 'FONT' or bpy.context.object.mode != 'EDIT':
 
-def update_text():
-    
-    global text_buffer
-    global current_char_index
-    
-    linked_text = link_text(text_buffer)
-    linked_text = swap_lines(linked_text)
-    
-    bpy.ops.font.select_all()
-    bpy.ops.font.delete()
-    bpy.ops.font.text_insert(text=linked_text)
-    
-    update_visual_cursor_position()
-    
-
-# Add a new character
-
-def insert_text(char):
-    
-    global text_buffer
-    global current_char_index
-    
-    text_buffer.insert(current_char_index, char)
-    
-    current_char_index += 1
-    
-    update_text()
-    
-
-# Move the cursor (well, our pointer) to the previous char/position
-
-def move_previous():
-    
-    global current_char_index
-    
-    if current_char_index > 0:
-
-        current_char_index -= 1
-    
-        # update_text()
-    
-    update_visual_cursor_position()
-
-
-# Move the cursor/pointer to the next char/position
-
-def move_next():
-    
-    global text_buffer
-    global current_char_index
-    
-    if current_char_index < len(text_buffer):
+            return
         
-        current_char_index += 1
+        self.text_buffer = swap_lines(bpy.context.object.data.body)
+        self.text_buffer = unlink_text(self.text_buffer)
         
-        # update_text()
+        addon_dir = os.path.dirname(os.path.realpath(__file__))
+        new_font = os.path.join(addon_dir, "B Nazanin.TTF")
         
-    update_visual_cursor_position()
+        if os.path.exists(new_font):
+            bpy.context.object.data.font = bpy.data.fonts.load(new_font, check_existing=True)    
+
+        bpy.context.object.data.align_x = 'RIGHT'
+        
+        self.current_char_index = 0
+        
+        self.update_visual_cursor_position()
 
 
-# Move the cursor/pointer to the start of the current line
+    #
 
-def move_line_start():
-    
-    global text_buffer
-    global current_char_index
-    
-    while current_char_index > 0:
+    def update_text(self):
         
-        current_char_index -= 1
+        linked_text = link_text(self.text_buffer)
+        linked_text = swap_lines(linked_text)
         
-        if text_buffer[current_char_index] == '\n':
+        bpy.ops.font.select_all()
+        bpy.ops.font.delete()
+        bpy.ops.font.text_insert(text=linked_text)
+        
+        self.update_visual_cursor_position()
+        
+
+    # Add a new character
+
+    def insert_text(self, char):
+        
+        self.text_buffer.insert(self.current_char_index, char)
+        
+        self.current_char_index += 1
+        
+        self.update_text()
+        
+
+    # Move the cursor (well, our pointer) to the previous char/position
+
+    def move_previous(self):
+                
+        if self.current_char_index > 0:
+
+            self.current_char_index -= 1
+        
+            # update_text()
+        
+        self.update_visual_cursor_position()
+
+
+    # Move the cursor/pointer to the next char/position
+
+    def move_next(self):
+        
+        if self.current_char_index < len(self.text_buffer):
             
-            current_char_index += 1
-
-            break
-        
-    update_visual_cursor_position()
-
-
-# Move the cursor/pointer to the end of the current line
-
-def move_line_end():
-    
-    global text_buffer
-    global current_char_index
-    
-    while current_char_index < len(text_buffer):
-        
-        if text_buffer[current_char_index] == '\n':
+            self.current_char_index += 1
             
-            break
-        
-        current_char_index += 1
-        
-    update_visual_cursor_position()
-
-
-# Move the cursor/pointer to the previous line
-
-def move_up():
-    
-    global text_buffer
-    global current_char_index
-    
-    line_start = get_line_start()
-    line_offset = current_char_index - line_start
-    
-    previous_line_end = line_start - 2
-    
-    previous_line_start = get_line_start(previous_line_end)
-    
-    previous_line_size = previous_line_end - previous_line_start
-    
-    new_index = previous_line_start + min(line_offset, previous_line_size + 1)
-    
-    if is_valid_char_index(new_index):
-        
-        current_char_index = new_index
-        update_visual_cursor_position()
-
-
-# Move the cursor/pointer to the next line
-
-def move_down():
-    
-    global text_buffer
-    global current_char_index
-    
-    new_line_size = 0
-    
-    line_start = get_line_start()
-    line_offset = current_char_index - line_start
-    
-    new_index = get_next_line_start()
-    
-    if new_index == -1:
-    
-        return
-    
-    for i in range(line_offset):
-        
-        if not is_valid_char_index(new_index):
-        
-            break
-        
-        if text_buffer[new_index] == '\n':
-        
-            break
-        
-        new_index += 1
-        
-    if is_valid_char_index(new_index) or new_index == len(text_buffer):
-        
-        current_char_index = new_index
-        update_visual_cursor_position()
-
-
-# Delete the previous character
-
-def delete_previous():
-    
-    global current_char_index
-    
-    if current_char_index > 0:
-        
-        text_buffer.pop(current_char_index - 1)
-        
-        current_char_index -= 1
-        
-        update_text()
-
-
-# Delete the next character
-
-def delete_next():
-    
-    global text_buffer
-    global current_char_index
-    
-    if is_valid_char_index(current_char_index):
-        
-        del(text_buffer[current_char_index])
-        
-        update_text()
-
-
-#
-
-def get_line_start(index=-1):
-    
-    global text_buffer
-    global current_char_index
-    
-    line_start = current_char_index if index == - 1 else index
-    
-    while line_start > 0:
-        
-        line_start -= 1
-        
-        if text_buffer[line_start] == '\n':
-
-            line_start += 1
+            # update_text()
             
-            break
+        self.update_visual_cursor_position()
+
+
+    # Move the cursor/pointer to the start of the current line
+
+    def move_line_start(self):
         
-    return line_start
+        while self.current_char_index > 0:
+            
+            self.current_char_index -= 1
+            
+            if self.text_buffer[self.current_char_index] == '\n':
+                
+                self.current_char_index += 1
+
+                break
+            
+        self.update_visual_cursor_position()
 
 
-#
+    # Move the cursor/pointer to the end of the current line
 
-def get_next_line_start():
-    
-    global text_buffer
-    global current_char_index
-    
-    next_line_start = current_char_index
-    
-    while next_line_start < len(text_buffer):
+    def move_line_end(self):
         
-        if text_buffer[next_line_start] == '\n':
+        while self.current_char_index < len(self.text_buffer):
+            
+            if self.text_buffer[self.current_char_index] == '\n':
+                
+                break
+            
+            self.current_char_index += 1
+            
+        self.update_visual_cursor_position()
 
+
+    # Move the cursor/pointer to the previous line
+
+    def move_up(self):
+        
+        line_start = self.get_line_start()
+        line_offset = self.current_char_index - line_start
+        
+        previous_line_end = line_start - 2
+        
+        previous_line_start = self.get_line_start(previous_line_end)
+        
+        previous_line_size = previous_line_end - previous_line_start
+        
+        new_index = previous_line_start + min(line_offset, previous_line_size + 1)
+        
+        if self.is_valid_char_index(new_index):
+            
+            self.current_char_index = new_index
+            self.update_visual_cursor_position()
+
+
+    # Move the cursor/pointer to the next line
+
+    def move_down(self):
+        
+        new_line_size = 0
+        
+        line_start = self.get_line_start()
+        line_offset = self.current_char_index - line_start
+        
+        new_index = self.get_next_line_start()
+        
+        if new_index == -1:
+        
+            return
+        
+        for i in range(line_offset):
+            
+            if not self.is_valid_char_index(new_index):
+            
+                break
+            
+            if self.text_buffer[new_index] == '\n':
+            
+                break
+            
+            new_index += 1
+            
+        if self.is_valid_char_index(new_index) or new_index == len(self.text_buffer):
+            
+            self.current_char_index = new_index
+            self.update_visual_cursor_position()
+
+
+    # Delete the previous character
+
+    def delete_previous(self):
+        
+        if self.current_char_index > 0:
+            
+            self.text_buffer.pop(self.current_char_index - 1)
+            
+            self.current_char_index -= 1
+            
+            self.update_text()
+
+
+    # Delete the next character
+
+    def delete_next(self):
+        
+        if self.is_valid_char_index(self.current_char_index):
+            
+            del(self.text_buffer[self.current_char_index])
+            
+            self.update_text()
+
+
+    #
+
+    def get_line_start(self, index=-1):
+        
+        line_start = self.current_char_index if index == - 1 else index
+        
+        while line_start > 0:
+            
+            line_start -= 1
+            
+            if self.text_buffer[line_start] == '\n':
+
+                line_start += 1
+                
+                break
+            
+        return line_start
+
+
+    #
+
+    def get_next_line_start(self):
+        
+        next_line_start = self.current_char_index
+        
+        while next_line_start < len(self.text_buffer):
+            
+            if self.text_buffer[next_line_start] == '\n':
+
+                next_line_start += 1
+                
+                break
+            
             next_line_start += 1
             
-            break
-        
-        next_line_start += 1
-        
-        if next_line_start == len(text_buffer):
-        
-            return -1
-        
-    return next_line_start
+            if next_line_start == len(self.text_buffer):
+            
+                return -1
+            
+        return next_line_start
 
 
-#
-
-
-def is_valid_char_index(index):
-    
-    if len(text_buffer) > 0 and index >= 0 and index < len(text_buffer):
-    
-        return True
-    
-    return False
-
-
-# Make the visual cursor follow our pointer
-
-def update_visual_cursor_position():
-    
-    global text_buffer
-    global current_char_index
-
-    # Move visual cursor to the begining of the text
-    
-    for i in range(len(text_buffer)):
-    
-        bpy.ops.font.move(type='PREVIOUS_CHARACTER')
-    
     #
-    
-    current_line_start = get_line_start()
-    
-    for i in range(current_line_start):
 
-        if text_buffer[i] == '\n':
+
+    def is_valid_char_index(self, index):
         
-            bpy.ops.font.move(type='NEXT_LINE')
-    
-    # NOTE: we can do this in another way, without moving the cursor to the and of the line and then bring it back
-    # we can just count the length of the current line and move the cursor forward:
-    # (line_length - current_line_offset(= current_char_index - line_start)) times
-    
-    bpy.ops.font.move(type='LINE_END')
-    
-    for i in range(current_line_start, current_char_index):
+        if len(self.text_buffer) > 0 and index >= 0 and index < len(self.text_buffer):
         
-        # Do not count "Lem-Alef" as two letters
+            return True
         
-        if text_buffer[i] in {'ا', 'أ', 'إ', 'آ'}:
+        return False
+
+
+    # Make the visual cursor follow our pointer
+
+    def update_visual_cursor_position(self):
+
+        # Move visual cursor to the begining of the text
+        
+        for i in range(len(self.text_buffer)):
+        
+            bpy.ops.font.move(type='PREVIOUS_CHARACTER')
+        
+        #
+        
+        current_line_start = self.get_line_start()
+        
+        for i in range(current_line_start):
+
+            if self.text_buffer[i] == '\n':
             
-            if i > 0 and text_buffer[i - 1] == 'ل':
+                bpy.ops.font.move(type='NEXT_LINE')
+        
+        # NOTE: we can do this in another way, without moving the cursor to the and of the line and then bring it back
+        # we can just count the length of the current line and move the cursor forward:
+        # (line_length - current_line_offset(= self.current_char_index - line_start)) times
+        
+        bpy.ops.font.move(type='LINE_END')
+        
+        for i in range(current_line_start, self.current_char_index):
+            
+            # Do not count "Lem-Alef" as two letters
+            
+            if self.text_buffer[i] in {'ا', 'أ', 'إ', 'آ'}:
                 
-                continue
-            
-        bpy.ops.font.move(type='PREVIOUS_CHARACTER')
+                if i > 0 and self.text_buffer[i - 1] == 'ل':
+                    
+                    continue
+                
+            bpy.ops.font.move(type='PREVIOUS_CHARACTER')
 

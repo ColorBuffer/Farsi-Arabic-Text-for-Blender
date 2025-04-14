@@ -11,23 +11,21 @@ bl_info = {
 }
 
 import bpy
+from bpy.types import Operator, Context, Event
 from . import FarsiText as Fa
 
 
 # Keyboard Handler
 
-class __OT_FarsiTextMode(bpy.types.Operator):
+class __OT_FarsiTextMode(Operator):
 
     bl_idname = "view3d.arabic_text_mode"
     bl_label = "Write Farsi Text"
+    my_map: dict[int, Fa.Text] = {}
     
     #
     
-    def modal(self, context, event):
-        
-        global text_buffer
-        
-        global current_char_index
+    def modal(self, context: Context, event: Event):
         
         # Use this handler only when a 3DText object is selected and being edited
         
@@ -35,13 +33,15 @@ class __OT_FarsiTextMode(bpy.types.Operator):
         
             return {'PASS_THROUGH'}
         
-        #
+        if id(context.object) not in self.my_map:
+            self.my_map[id(context.object)] = Fa.Text()
+        fa = self.my_map[id(context.object)]
         
         if event.type == 'BACK_SPACE':
 
             if event.value == 'PRESS':
             
-                Fa.delete_previous()
+                fa.delete_previous()
             
             return {'RUNNING_MODAL'}
         
@@ -49,7 +49,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.delete_next()
+                fa.delete_next()
             
             return {'RUNNING_MODAL'}
         
@@ -57,7 +57,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.move_line_start()
+                fa.move_line_start()
             
             return {'RUNNING_MODAL'}
         
@@ -65,7 +65,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.move_line_end()
+                fa.move_line_end()
             
             return {'RUNNING_MODAL'}
         
@@ -73,7 +73,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.move_previous()
+                fa.move_previous()
             
             return {'RUNNING_MODAL'}
             
@@ -81,7 +81,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.move_next()
+                fa.move_next()
             
             return {'RUNNING_MODAL'}
         
@@ -89,7 +89,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
 
             if event.value == 'PRESS':
             
-                Fa.move_up()
+                fa.move_up()
             
             return {'RUNNING_MODAL'}
 
@@ -97,7 +97,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
 
             if event.value == 'PRESS':
             
-                Fa.move_down()
+                fa.move_down()
             
             return {'RUNNING_MODAL'}
 
@@ -105,17 +105,15 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
             
-                Fa.insert_text('\n')
+                fa.insert_text('\n')
             
             return {'RUNNING_MODAL'}
                    
         elif event.type == 'TAB':
             
-            if event.value == 'RELEASE':
+        #     if event.value == 'RELEASE' and bpy.context.object.mode == 'EDIT':
                 
-                if bpy.context.object.mode == 'EDIT':
-                
-                    Fa.init()
+        #             fa.init()
             
             return {'PASS_THROUGH'}
             
@@ -123,7 +121,7 @@ class __OT_FarsiTextMode(bpy.types.Operator):
             
             if event.value == 'PRESS':
                 
-                Fa.insert_text(event.unicode)
+                fa.insert_text(event.unicode)
             
             return {'RUNNING_MODAL'}
         
@@ -145,8 +143,6 @@ class __OT_FarsiTextMode(bpy.types.Operator):
                 
                 bpy.ops.object.editmode_toggle()
                 bpy.ops.object.editmode_toggle()
-                
-                Fa.init()
             
             return {'RUNNING_MODAL'}
 
