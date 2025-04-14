@@ -104,23 +104,25 @@ class __OT_FarsiTextMode(Operator):
         else:
             return {'CANCELLED'}
 
+from bpy.app.handlers import persistent
 
-keymaps = []
-
+@persistent
+def load_handler(dummy):
+    # only apply to startup
+    if not bpy.data.filepath:
+        return
+    for area in bpy.context.screen.areas:
+        if area.type == "VIEW_3D":
+            with bpy.context.temp_override(area = area):
+                bpy.ops.view3d.arabic_text_mode('INVOKE_DEFAULT')
+                break
 
 def register():
     bpy.utils.register_class(__OT_FarsiTextMode)
-    wm = bpy.context.window_manager
-    kc = wm.keyconfigs.addon
-    if kc:
-        km = wm.keyconfigs.addon.keymaps.new(name="Window")
-        kmi = km.keymap_items.new(__OT_FarsiTextMode.bl_idname, 'F1', 'PRESS', ctrl=True)
-        keymaps.append((km, kmi))
+
+    bpy.app.handlers.load_post.append(load_handler)
     
 def unregister():
-    for km, kmi in keymaps:
-        km.keymap_items.remove(kmi)
-    keymaps.clear()
     bpy.utils.unregister_class(__OT_FarsiTextMode)
 
 if __name__ == "__main__":
