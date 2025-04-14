@@ -87,6 +87,12 @@ class __OT_FarsiTextMode(Operator):
                 fa.insert_text(event.unicode)
             return {'RUNNING_MODAL'}
         
+        elif event.type == 'V' and event.ctrl:
+            if event.value == 'PRESS':
+                pasted_text = bpy.context.window_manager.clipboard
+                fa.insert_text(pasted_text)
+            return {'RUNNING_MODAL'}
+        
         return {'PASS_THROUGH'}
      
     #
