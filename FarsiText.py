@@ -427,7 +427,7 @@ class Text:
     
     def __init__(self, src: str):
         self.text_buffer = unlink_text(swap_lines(src))
-        self.current_char_index = 0
+        self.current_char_index = len(src)
         self.update_visual_cursor_position()
 
     def update_text(self):
