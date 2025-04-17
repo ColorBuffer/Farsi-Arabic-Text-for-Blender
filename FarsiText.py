@@ -2,108 +2,52 @@ import bpy
 import os
 
 # Farsi letters list
-farsi_chars = [
-    'ا',
-    'أ',
-    'إ',
-    'آ',
-    'ء',
-    'ب',
-    'پ',
-    'ت',
-    'ث',
-    'ج',
-    'چ',
-    'ح',
-    'خ',
-    'د',
-    'ذ',
-    'ر',
-    'ز',
-    'ژ',
-    'س',
-    'ش',
-    'ص',
-    'ض',
-    'ط',
-    'ظ',
-    'ع',
-    'غ',
-    'ف',
-    'ق',
-    'ك',
-    'ک',
-    'گ',
-    'ل',
-    'م',
-    'ن',
-    'ه',
-    'ة',
-    'و',
-    'ؤ',
-    'ي',
-    'ی',
-    'ئ',
-]
-
-
-# Farsi letters that need to be connected to the letter preceding them
-right_connectable_chars = ['ا', 'أ', 'إ', 'آ', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح',
-                           'خ', 'د', 'ذ', 'ر', 'ز', 'ژ','س', 'ش', 'ص', 'ض',
-                           'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ک', 'گ', 'ل', 'م',
-                           'ن', 'ه', 'ة', 'و', 'ؤ', 'ي', 'ی', 'ئ', 'ـ']
-
-
-# Farsi letters that need to be connected to the letter next to them
-left_connectable_chars = ['ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'س', 'ش', 'ص',
-                          'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ک', 'گ', 'ل',
-                          'م', 'ن', 'ه', 'ي', 'ی', 'ئ', 'ـ']
-
-
 # Locations (unicode) of Farsi letters shapes (when they are connected to other letters)
-chars_variants_bases = [
-    0xFE8D, # 'ﺍ'
-    0xFE83, # 'ﺃ'
-    0xFE87, # 'ﺇ'
-    0xFE81, # 'ﺁ'
-    0xFE80, # 'ﺀ'
-    0xFE8F, # 'ﺏ'
-    0xFB56, # 'ﭖ'
-    0xFE95, # 'ﺕ'
-    0xFE99, # 'ﺙ'
-    0xFE9D, # 'ﺝ'
-    0xFB7A, # 'ﭺ'
-    0xFEA1, # 'ﺡ'
-    0xFEA5, # 'ﺥ'
-    0xFEA9, # 'ﺩ'
-    0xFEAB, # 'ﺫ'
-    0xFEAD, # 'ﺭ'
-    0xFEAF, # 'ﺯ'
-    0xFB8A, # 'ﮊ'
-    0xFEB1, # 'ﺱ'
-    0xFEB5, # 'ﺵ'
-    0xFEB9, # 'ﺹ'
-    0xFEBD, # 'ﺽ'
-    0xFEC1, # 'ﻁ'
-    0xFEC5, # 'ﻅ'
-    0xFEC9, # 'ﻉ'
-    0xFECD, # 'ﻍ'
-    0xFED1, # 'ﻑ'
-    0xFED5, # 'ﻕ'
-    0xFED9, # 'ﻙ'
-    0xFB8E, # 'ﮎ'
-    0xFB92, # 'ﮒ'
-    0xFEDD, # 'ﻝ'
-    0xFEE1, # 'ﻡ'
-    0xFEE5, # 'ﻥ'
-    0xFEE9, # 'ﻩ'
-    0xFE93, # 'ﺓ'
-    0xFEED, # 'ﻭ'
-    0xFE85, # 'ﺅ'
-    0xFEF1, # 'ﻱ'
-    0xFEEF, # 'ﻯ'
-    0xFE89, # 'ﺉ'
-]
+# Farsi letters that need to be connected to the letter preceding them
+# Farsi letters that need to be connected to the letter next to them
+farsi_chars = {
+    'ا': (0xFE8D, True, False),
+    'أ': (0xFE83, True, False),
+    'إ': (0xFE87, True, False),
+    'آ': (0xFE81, True, False),
+    'ء': (0xFE80, False, False),
+    'ب': (0xFE8F, True, True),
+    'پ': (0xFB56, True, True),
+    'ت': (0xFE95, True, True),
+    'ث': (0xFE99, True, True),
+    'ج': (0xFE9D, True, True),
+    'چ': (0xFB7A, True, True),
+    'ح': (0xFEA1, True, True),
+    'خ': (0xFEA5, True, True),
+    'د': (0xFEA9, True, False),
+    'ذ': (0xFEAB, True, False),
+    'ر': (0xFEAD, True, False),
+    'ز': (0xFEAF, True, False),
+    'ژ': (0xFB8A, True, False),
+    'س': (0xFEB1, True, True),
+    'ش': (0xFEB5, True, True),
+    'ص': (0xFEB9, True, True),
+    'ض': (0xFEBD, True, True),
+    'ط': (0xFEC1, True, True),
+    'ظ': (0xFEC5, True, True),
+    'ع': (0xFEC9, True, True),
+    'غ': (0xFECD, True, True),
+    'ف': (0xFED1, True, True),
+    'ق': (0xFED5, True, True),
+    'ك': (0xFED9, True, True),
+    'ک': (0xFB8E, True, True),
+    'گ': (0xFB92, True, True),
+    'ل': (0xFEDD, True, True),
+    'م': (0xFEE1, True, True),
+    'ن': (0xFEE5, True, True),
+    'ه': (0xFEE9, True, True),
+    'ة': (0xFE93, True, False),
+    'و': (0xFEED, True, False),
+    'ؤ': (0xFE85, True, False),
+    'ي': (0xFEF1, True, True),
+    'ی': (0xFEEF, True, True),
+    'ئ': (0xFE89, True, True),
+}
 
 chars_farsi_symbols = ['ـ', '،', '؟', '×', '÷']
 chars_common = [' ', '.', ',', ':', '|', '(', ')', '[', ']', '{', '}', '!', '+', '-', '*', '/', '\\', '%', '"', '\'', '>', '<', '=', '~', '_']
@@ -111,23 +55,22 @@ chars_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 # Check if a letter should be connected to the letter preceding it
 def is_right_connectable(c):
-    if c in right_connectable_chars:
-        return True
-    return False
+    if c not in farsi_chars:
+        return False
+    return farsi_chars[c][1]
 
 
 # Check if a letter should be connected to the letter next to it
 def is_left_connectable(c):
-    if c in left_connectable_chars:
-        return True
-    return False
+    if c not in farsi_chars:
+        return False
+    return farsi_chars[c][2]
 
 # Get the location (unicode id) of an Farsi letter shapes (when connected)
 def get_char_variants_base(c):
     if c not in farsi_chars:   # It's not an Farsi char
         return -1
-    char_index = farsi_chars.index(c)
-    return chars_variants_bases[char_index]
+    return farsi_chars[c][0]
 
 #
 def is_farsi_char(c):
