@@ -122,19 +122,11 @@ def is_left_connectable(c):
         return True
     return False
 
-
-# Index of an Farsi letter in the list above
-def get_char_index(c):
-    if c not in farsi_chars:   # not an Farsi char
-        return -1
-    return farsi_chars.index(c)
-
-
 # Get the location (unicode id) of an Farsi letter shapes (when connected)
 def get_char_variants_base(c):
-    char_index = get_char_index(c)
-    if char_index == -1:   # It's not an Farsi char
+    if c not in farsi_chars:   # It's not an Farsi char
         return -1
+    char_index = farsi_chars.index(c)
     return chars_variants_bases[char_index]
 
 #
