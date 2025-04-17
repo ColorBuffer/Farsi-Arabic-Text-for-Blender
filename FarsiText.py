@@ -2,7 +2,7 @@ import bpy
 import os
 
 # Farsi letters list
-# Locations (unicode) of Farsi letters shapes (when they are connected to other letters)
+# Isolated Unicode of Farsi letters shapes (base for they are connected to other letters)
 # Farsi letters that need to be connected to the letter preceding them
 # Farsi letters that need to be connected to the letter next to them
 farsi_chars = {
