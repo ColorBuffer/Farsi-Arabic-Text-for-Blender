@@ -5,7 +5,7 @@ import os
 farsi_chars = ['ا', 'أ', 'إ', 'آ', 'ء', 'ب', 'پ', 'ت', 'ث', 'ج', 'چ',
                 'ح', 'خ', 'د', 'ذ', 'ر', 'ز', 'ژ', 'س', 'ش', 'ص',
                 'ض', 'ط', 'ظ', 'ع', 'غ', 'ف', 'ق', 'ك', 'ک', 'گ', 'ل',
-                'م', 'ن', 'ه', 'ة', 'و', 'ؤ', 'ي', 'ی', 'ئ', 'ـ']
+                'م', 'ن', 'ه', 'ة', 'و', 'ؤ', 'ي', 'ی', 'ئ']
 
 
 # Farsi letters that need to be connected to the letter preceding them
@@ -65,6 +65,8 @@ def get_char_variants_base(c):
 
 #
 def is_farsi_char(c):
+    if c == 'ـ': # Low line
+        return True
     if c in farsi_chars:
         return True
     return False
