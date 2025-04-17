@@ -22,7 +22,6 @@ left_connectable_chars = ['ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'س', 
 
 
 # Locations (unicode) of Farsi letters shapes (when they are connected to other letters)
-#                          ا       أ       إ       آ       ء       ب       ت       ث       ج      چ
 chars_variants_bases = [
     0xFE8D,
     0xFE83,
@@ -35,7 +34,6 @@ chars_variants_bases = [
     0xFE99,
     0xFE9D,
     0xFB7A,
-#                          ح       خ       د       ذ       ر       ز       س       ش       ص
     0xFEA1,
     0xFEA5,
     0xFEA9,
@@ -46,7 +44,6 @@ chars_variants_bases = [
     0xFEB1,
     0xFEB5,
     0xFEB9,
-#                          ض       ط       ظ       ع       غ       ف       ق       ك       ک       ل
     0xFEBD,
     0xFEC1,
     0xFEC5,
@@ -58,7 +55,6 @@ chars_variants_bases = [
     0xFB8E,
     0xFB92,
     0xFEDD,
-#                          م       ن       ه       ة       و       ؤ       ي       ی       ئ
     0xFEE1,
     0xFEE5,
     0xFEE9,
