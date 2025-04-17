@@ -23,13 +23,52 @@ left_connectable_chars = ['ب', 'پ', 'ت', 'ث', 'ج', 'چ', 'ح', 'خ', 'س', 
 
 # Locations (unicode) of Farsi letters shapes (when they are connected to other letters)
 #                          ا       أ       إ       آ       ء       ب       ت       ث       ج      چ
-chars_variants_bases = [0xFE8D, 0xFE83, 0xFE87, 0xFE81, 0xFE80, 0xFE8F, 0xFB56, 0xFE95, 0xFE99, 0xFE9D, 0xFB7A,
+chars_variants_bases = [
+    0xFE8D,
+    0xFE83,
+    0xFE87,
+    0xFE81,
+    0xFE80,
+    0xFE8F,
+    0xFB56,
+    0xFE95,
+    0xFE99,
+    0xFE9D,
+    0xFB7A,
 #                          ح       خ       د       ذ       ر       ز       س       ش       ص
-                        0xFEA1, 0xFEA5, 0xFEA9, 0xFEAB, 0xFEAD, 0xFEAF, 0xFB8A, 0xFEB1, 0xFEB5, 0xFEB9,
+    0xFEA1,
+    0xFEA5,
+    0xFEA9,
+    0xFEAB,
+    0xFEAD,
+    0xFEAF,
+    0xFB8A,
+    0xFEB1,
+    0xFEB5,
+    0xFEB9,
 #                          ض       ط       ظ       ع       غ       ف       ق       ك       ک       ل
-                        0xFEBD, 0xFEC1, 0xFEC5, 0xFEC9, 0xFECD, 0xFED1, 0xFED5, 0xFED9, 0xFB8E, 0xFB92, 0xFEDD,
+    0xFEBD,
+    0xFEC1,
+    0xFEC5,
+    0xFEC9,
+    0xFECD,
+    0xFED1,
+    0xFED5,
+    0xFED9,
+    0xFB8E,
+    0xFB92,
+    0xFEDD,
 #                          م       ن       ه       ة       و       ؤ       ي       ی       ئ
-                        0xFEE1, 0xFEE5, 0xFEE9, 0xFE93, 0xFEED, 0xFE85, 0xFEF1, 0xFEEF, 0xFE89]
+    0xFEE1,
+    0xFEE5,
+    0xFEE9,
+    0xFE93,
+    0xFEED,
+    0xFE85,
+    0xFEF1,
+    0xFEEF,
+    0xFE89,
+]
 
 chars_farsi_symbols = ['ـ', '،', '؟', '×', '÷']
 chars_common = [' ', '.', ',', ':', '|', '(', ')', '[', ']', '{', '}', '!', '+', '-', '*', '/', '\\', '%', '"', '\'', '>', '<', '=', '~', '_']
