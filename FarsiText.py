@@ -127,16 +127,10 @@ def link_text(unlinked_text):
             skip_char = False
             continue
 
-        previous_char = ""
-        next_char = ""
-
         chars_count = len(linked_text) + uncounted_chars
 
-        if chars_count > 0:
-            previous_char = unlinked_text[chars_count - 1]
-
-        if chars_count < len(unlinked_text) - 1:
-            next_char = unlinked_text[chars_count + 1]
+        previous_char = unlinked_text[chars_count - 1] if chars_count > 0 else ""
+        next_char = unlinked_text[chars_count + 1] if chars_count < len(unlinked_text) - 1 else ""
 
         # Lem-Alef
         # Teher are four forms of this letter
