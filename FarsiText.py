@@ -49,6 +49,19 @@ farsi_chars = {
     'ئ': (0xFE89, True, True),
 }
 
+combinations = {
+    'لا': 0xFEFB,
+    'لأ': 0xFEF7,
+    'لإ': 0xFEF9,
+    'لآ': 0xFEF5,
+}
+
+def find_combination(current_char: str, next_char: str):
+    for combination, char_code in combinations.items():
+        if combination[0] == current_char and combination[1] == next_char:
+            return char_code
+    return 0
+
 chars_farsi_symbols = ['ـ', '،', '؟', '×', '÷']
 chars_common = [' ', '.', ',', ':', '|', '(', ')', '[', ']', '{', '}', '!', '+', '-', '*', '/', '\\', '%', '"', '\'', '>', '<', '=', '~', '_']
 chars_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -132,33 +145,14 @@ def link_text(unlinked_text):
         previous_char = unlinked_text[chars_count - 1] if chars_count > 0 else ""
         next_char = unlinked_text[chars_count + 1] if chars_count < len(unlinked_text) - 1 else ""
 
-        # Lem-Alef
-        # Teher are four forms of this letter
-
-        if current_char == 'ل':
-
-            if next_char == 'ا':
-                char_code = 0xFEFB
-
-            elif next_char == 'أ':
-                char_code = 0xFEF7
-
-            elif next_char == 'إ':
-                char_code = 0xFEF9
-
-            elif next_char == 'آ':
-                char_code = 0xFEF5
-
-            else:
-                char_code = 0
-
-            if char_code != 0:
-                if is_left_connectable(previous_char):
-                    char_code += 1
-                linked_text.insert(0, chr(char_code))
-                uncounted_chars += 1
-                skip_char = True
-                continue
+        char_code = find_combination(current_char, next_char)
+        if char_code != 0:
+            if is_left_connectable(previous_char):
+                char_code += 1
+            linked_text.insert(0, chr(char_code))
+            uncounted_chars += 1
+            skip_char = True
+            continue
 
         if current_char in chars_farsi_symbols:
             linked_text.insert(0, current_char)
