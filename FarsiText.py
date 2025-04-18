@@ -1,10 +1,7 @@
 import bpy
 import os
 
-# Farsi letters list
-# Isolated Unicode of Farsi letters shapes (base for they are connected to other letters)
-# Farsi letters that need to be connected to the letter preceding them
-# Farsi letters that need to be connected to the letter next to them
+# general: (Isolated, Final, Initial)
 farsi_chars = {
     'ا': (0xFE8D, True, False),
     'أ': (0xFE83, True, False),
@@ -67,14 +64,14 @@ chars_common = [' ', '.', ',', ':', '|', '(', ')', '[', ']', '{', '}', '!', '+',
 chars_digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 # Check if a letter should be connected to the letter preceding it
-def is_right_connectable(c):
+def can_be_final(c):
     if c not in farsi_chars:
         return False
     return farsi_chars[c][1]
 
 
 # Check if a letter should be connected to the letter next to it
-def is_left_connectable(c):
+def can_be_initial(c):
     if c not in farsi_chars:
         return False
     return farsi_chars[c][2]
@@ -147,7 +144,7 @@ def link_text(unlinked_text):
 
         char_code = find_combination(current_char, next_char)
         if char_code != 0:
-            if is_left_connectable(previous_char):
+            if can_be_initial(previous_char):
                 char_code += 1
             linked_text.insert(0, chr(char_code))
             uncounted_chars += 1
@@ -213,9 +210,9 @@ def link_text(unlinked_text):
 
         # It's an Farsi alhpabet
 
-        if is_left_connectable(previous_char) and is_right_connectable(current_char):
+        if can_be_initial(previous_char) and can_be_final(current_char):
 
-            if is_left_connectable(current_char) and is_right_connectable(next_char):
+            if can_be_initial(current_char) and can_be_final(next_char):
                 
                 if char_code == 65263: # ی
                     char_code += 5
@@ -227,7 +224,7 @@ def link_text(unlinked_text):
                 char_code += 1
         else:
 
-            if is_left_connectable(current_char) and is_right_connectable(next_char):
+            if can_be_initial(current_char) and can_be_final(next_char):
                 
                 if char_code == 65263:
                     char_code += 4
